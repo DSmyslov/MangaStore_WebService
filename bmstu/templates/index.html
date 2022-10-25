@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab_1</title>
+</head>
+<body>
+    <div>Hello everyone!</div>
+    <div>Today is {{ date.current_date }}</div>
+    <br>
+    <div><b>Список манги, которая скоро станет доступной для заказа:</b></div>
+    {% for manga in data.mangas %}
+        <div>
+            <div>Название: {{ manga.name }}</div>
+            <div>Оценка: {{ manga.score }}</div>
+            {% if manga.name == 'One Piece' %}
+                <div><b>Рекомендуем данную мангу!</b></div>
+            {% elif manga.name == 'MyOwnManga' %}
+                <div><b>Не вся манга доступна для продажи</b></div>
+            {% endif %}
+            <br>
+        </div>
+    {% endfor %}
+</body>
+</html>

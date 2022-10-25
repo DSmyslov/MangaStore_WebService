@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}AllManga{% endblock %}
+
+{% block content %}
+    <div>Список манги:</div>
+    {% for manga in manga_list %}
+        {% include 'manga_info.html' with element=manga %}
+    {% empty %}
+        <div>К сожалению нет доступной манги для заказа :(</div>
+    {% endfor %}
+{% endblock %}

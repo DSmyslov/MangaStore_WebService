@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Manga{% endblock %}
+
+{% block content %}
+    <div>Тайтл: {% if manga.title.title_name_eng %}
+                    {{ manga.title.title_name_eng }}
+                {% elif manga.title.title_name_rus %}
+                    {{ manga.title.title_name_rus }}
+                {% else %}
+                    {{ manga.title.title_name_jp }}
+                {% endif %}</div>
+    <div>Название: <a href="{% url 'manga_url' manga.id %}">
+        {{ manga.manga_name }}</a></div>
+    <img src="{% static manga.manga_image %}" width="256">
+    <div>Тип: {{ manga.type.type_name }}</div>
+    {% if manga.release_date %}
+        <div>Дата выхода: {{ manga.release_date }}</div>
+    {% endif %}
+    {% if stock != 'null' %}
+        {% if stock.qty > 0 %}
+            <div>Количество на складе: {{ stock.qty }}</div>
+            <div>Стоимость одного экземпляра: {{ stock.cost }} руб.</div>
+        {% endif %}
+    {% else %}
+        <div>К сожалению, данной манги на складе нет :(</div>
+    {% endif %}
+{% endblock %}

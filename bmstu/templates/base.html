@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static "styles/csstest.css" %}">
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <header>Manga</header>
+    {% block content %}{% endblock %}
+    <footer>Made by Smyslov Dmitriy, ICS5-51B</footer>
+</body>
+</html>

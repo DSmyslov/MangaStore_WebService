@@ -1,0 +1,19 @@
+{% load static %}
+
+<div>
+    <div>Тайтл: {% if manga.title.title_name_eng %}
+                    {{ manga.title.title_name_eng }}
+                {% elif manga.title.title_name_rus %}
+                    {{ manga.title.title_name_rus }}
+                {% else %}
+                    {{ manga.title.title_name_jp }}
+                {% endif %}</div>
+    <div>Название: <a href="{% url 'manga_url' manga.id %}">
+        {{ manga.manga_name }}</a></div>
+    <img src="{% static manga.manga_image %}" width="256">
+    <div>Тип: {{ manga.type.type_name }}</div>
+    {% if manga.release_date %}
+        <div>Дата выхода: {{ manga.release_date }}</div>
+    {% endif %}
+    </br>
+</div>
