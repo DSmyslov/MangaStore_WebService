@@ -1,0 +1,36 @@
+.page-name {
+    font-size: x-large;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+}
+
+.grid {
+    justify-content: center;
+}
+
+.empty-result-message {
+    display: flex;
+    justify-content: center;
+}
+
+.grid .col {
+    padding: 10px;
+    /*display: flex;*/
+    /*flex-flow: column;*/
+}
+
+.inputField input {
+    width: 200px;
+    margin-right: 5px;
+}
+
+.inputField .btn {
+    margin-left: 5px;
+}

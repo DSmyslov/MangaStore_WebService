@@ -1,0 +1,14 @@
+.main-container {
+    width: 80%;
+}
+
+.empty-result-message {
+    display: flex;
+    justify-content: center;
+}
+
+.manga-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
