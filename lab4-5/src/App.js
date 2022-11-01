@@ -8,21 +8,29 @@ function App() {
     return (
         <BrowserRouter basename="/" >
             <div className={"web-service-title"}>Manga WebStore</div>
+            <div className={"site-navigator"}>
+                <ul className={"list-of-links"}>
+                    <li>
+                        <Link to={"/"}>
+                            <p>Главная страница</p>
+                        </Link>
+                    </li>
+                    <li>
+                        <Link to={'/manga'}>
+                            <p>Вся манга здесь!</p>
+                        </Link>
+                    </li>
+                    <li>
+                        <a href={"https://github.com/DSmyslov/MangaStore_WebService"}
+                           target={"_blank"} rel={"noreferrer"}>
+                            <p>GitHub</p>
+                        </a>
+                    </li>
+                </ul>
+            </div>
             <Switch>
 
                 <Route exact path={'/'}>
-                    <div className={"site-navigator"}>
-                        <ul className={"list-of-links"}>
-                            <li>
-                                <Link to={'/manga'}>
-                                    <p>Вся манга здесь!</p>
-                                </Link>
-                            </li>
-                            <li>
-                                <a href={"https://github.com/DSmyslov/MangaStore_WebService"} target={"_blank"} rel={"noreferrer"}>GitHub</a>
-                            </li>
-                        </ul>
-                    </div>
                 </Route>
 
                 <Route exact path={'/manga'}>
