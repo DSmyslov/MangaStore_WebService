@@ -6,7 +6,7 @@ import "../styles/MangaCardStyle.css";
 const MangaCard = (manga) => {
     return <Card>
         <Link to={`/manga/${manga.id}`}>
-            <Card.Img variant="top" src={`http://localhost:8000/static/${manga.manga_image}`} height="300" />
+            <Card.Img variant="top" src={`http://localhost:8000/static/${manga.manga_image}`}/>
         </Link>
         <Card.Body>
             <Link to={`/manga/${manga.id}`}>
