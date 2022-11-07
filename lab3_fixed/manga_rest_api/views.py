@@ -4,8 +4,25 @@ from manga_rest_api.models import *
 
 
 class MangaViewSet(viewsets.ModelViewSet):
-    queryset = Manga.objects.all().order_by("release_date")
     serializer_class = MangaSerializer
+
+    def get_queryset(self):
+        queryset = Manga.objects.all()
+        if self.request.method == 'GET':
+            params = self.request.query_params.dict()
+            try:
+                queryset = queryset.filter(manga_name__icontains=params['name'].replace('%20', ' '))
+            except:
+                pass
+            try:
+                queryset = queryset.filter(cost__lte=params['max_cost'])
+            except:
+                pass
+            try:
+                queryset = queryset.filter(cost__gte=params['min_cost'])
+            except:
+                pass
+        return queryset
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
@@ -60,3 +77,4 @@ class GenresOfMangaViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = GenreManga.objects.filter(id_manga=self.kwargs['manga_pk'])
         return queryset
+

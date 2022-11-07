@@ -1,5 +1,5 @@
 export const getMangaList = async () => {
-    return await fetch(`http://127.0.0.1:8000/manga/`)
+    return await fetch(`http://localhost:8000/manga/`)
         .then(async (response) => {
             return await response.json();
         })
@@ -38,9 +38,9 @@ export const getGenresOfManga = async (manga_id) => {
 }
 
 export const getMangaByName = async (search_value) => {
-    return await fetch('http://localhost:8000/manga/')
+    return await fetch(`http://localhost:8000/manga/?name=${search_value}`)
         .then(async (response) => {
-            return await (await response.json()).filter(manga => manga.manga_name.toLowerCase().match(RegExp(search_value.toLowerCase())));
+            return await (await response.json());
         })
         .catch(() => {
             return {
