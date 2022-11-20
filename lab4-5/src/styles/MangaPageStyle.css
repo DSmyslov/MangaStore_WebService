@@ -9,6 +9,11 @@
 
 .manga-img {
     display: block;
-    width: 100%;
-    height: auto;
+    width: auto;
+    height: 60%;
+}
+
+.img {
+    display: flex;
+    justify-content: end;
 }

@@ -1,0 +1,5 @@
+export const setLoadingStatus = "setLoadingStatus"
+export const setMangaList = "setMangaList"
+export const setTextFieldValue = "setTextFieldValue"
+export const setMangaPricing = "setMangaPricing"
+export const setSliderValue = "setSliderValue"

@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Link, Switch } from "react-router-dom";
 import StartPage from "./pages/StartPage";
 import MangaPage from "./pages/MangaPage";
 import "./App.css";
+import BasicBreadcrumbs from "./components/Breadcrumbs";
+import React from "react";
 
 function App() {
 
@@ -12,7 +14,7 @@ function App() {
                 <ul className={"list-of-links"}>
                     <li>
                         <Link to={"/"}>
-                            <p>Главная страница</p>
+                            <p>Стартовая страница</p>
                         </Link>
                     </li>
                     <li>
@@ -31,6 +33,13 @@ function App() {
             <Switch>
 
                 <Route exact path={'/'}>
+                    <BasicBreadcrumbs props={[
+                        {
+                            ref: '/',
+                            text: 'Начальная страница'
+                        }
+                    ]}/>
+                    <div className={"navbar"}>Добро пожаловать!</div>
                 </Route>
 
                 <Route exact path={'/manga'}>

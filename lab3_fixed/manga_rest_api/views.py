@@ -1,6 +1,14 @@
 from rest_framework import viewsets
+from django.db.models import Max, Min, Avg, Count
 from manga_rest_api.serializers import *
 from manga_rest_api.models import *
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
+@api_view(['GET'])
+def get_manga_pricing(request):
+    return Response(Manga.objects.aggregate(max_price=Max('cost'), min_price=Min('cost'), average_cost=Avg('cost')))
 
 
 class MangaViewSet(viewsets.ModelViewSet):
@@ -11,7 +19,7 @@ class MangaViewSet(viewsets.ModelViewSet):
         if self.request.method == 'GET':
             params = self.request.query_params.dict()
             try:
-                queryset = queryset.filter(manga_name__icontains=params['name'].replace('%20', ' '))
+                queryset = queryset.filter(manga_name__icontains=params['name'])
             except:
                 pass
             try:
@@ -22,7 +30,7 @@ class MangaViewSet(viewsets.ModelViewSet):
                 queryset = queryset.filter(cost__gte=params['min_cost'])
             except:
                 pass
-        return queryset
+        return queryset.order_by("release_date")
 
 
 class AuthorViewSet(viewsets.ModelViewSet):
