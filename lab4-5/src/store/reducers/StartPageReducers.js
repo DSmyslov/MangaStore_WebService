@@ -2,6 +2,7 @@ import initialState from "../initialState";
 import * as StartPageActions from "../actions/StartPageActions";
 import {combineReducers} from "@reduxjs/toolkit";
 
+
 function textFieldValueReducer(state = initialState.ui.StartPage.textFieldValue, action) {
     switch (action.type) {
         case StartPageActions.setTextFieldValue:

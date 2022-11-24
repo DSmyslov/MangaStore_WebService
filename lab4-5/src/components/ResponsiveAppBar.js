@@ -42,9 +42,14 @@ function ResponsiveAppBar() {
                 title: 'Корзина',
                 link: '/cart'
             }))
+            dispatch(createAction_addToAppBarLinks({
+                title: 'Мои заказы',
+                link: '/purchases'
+            }))
         }
         else {
             dispatch(createAction_setUserStatus(!userStatus))
+            dispatch(createAction_deleteFromAppBarLinks())
             dispatch(createAction_deleteFromAppBarLinks())
         }
     }

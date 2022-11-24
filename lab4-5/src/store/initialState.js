@@ -9,6 +9,10 @@ const initialState = {
             authorsOfManga: [],
             mangaById: {},
         },
+        App: {
+            userAuthorized: false,
+            userCart: [],
+        }
     },
     ui: {
         StartPage: {
@@ -18,6 +22,18 @@ const initialState = {
         },
         MangaPage: {
             loadingStatus: true,
+        },
+        App: {
+            AppBarLinks: [
+                {
+                    title: 'Начальная страница',
+                    link: '/'
+                },
+                {
+                    title: 'Список манги',
+                    link: '/manga'
+                },
+            ],
         }
     }
 }

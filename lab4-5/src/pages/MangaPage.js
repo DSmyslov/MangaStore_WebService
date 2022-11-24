@@ -52,14 +52,14 @@ function MangaPage() {
                             {!manga.id ? <div className={"empty-result-message"}><h1>Кажется, в нашем магазине нет такой манги :(</h1></div>:
                                 <>
                                     <Row xs={1} md={1} sm={1} lg={2} className="grid">
-                                        <Col className={"img"}>
+                                        <Col  className={"img"}>
                                             <img src={`http://localhost:3000/${manga.manga_image}`}
                                                  alt={"manga"} className={"manga-img"} />
                                         </Col>
                                         <Col className={"info"}>
                                             <MangaFullInfo {...manga}/>
                                             <br/>
-                                            {!authors.length ? <div>Кажется, мы не знаем авторов этой манги</div>:
+                                            {!authors.length ? <div>К сожалению, мы не знаем авторов этой манги</div>:
                                                 <div className={"authors"}>
                                                     Автор{authors.length > 1? 'ы':''}: {authors.map((value, index) => {
                                                     return (
@@ -69,7 +69,7 @@ function MangaPage() {
                                                 </div>
                                             }
                                             <br/>
-                                            {!genres.length ? <div>Кажется, мы не знаем жанры этой манги</div>:
+                                            {!genres.length ? <div>К сожалению, мы не знаем жанры этой манги</div>:
                                                 <div className={"genres"}>
                                                     Жанр{genres.length > 1 ? 'ы': ''}: <HorizontalList {...genres}/>
                                                 </div>
