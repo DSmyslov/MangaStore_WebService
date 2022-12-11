@@ -16,7 +16,7 @@ export const fetchMangaList = (filters) => async dispatch => {
     }
 }
 
-export const fetchFullInfo = () => async dispatch => {
+export const fetchStartPageData = () => async dispatch => {
     dispatch(StartPageActionCreators.createAction_setLoadingStatus(true))
     const mangaList = await getMangaList()
     const data = await getMangaPricing()

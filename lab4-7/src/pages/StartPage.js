@@ -6,34 +6,27 @@ import BasicBreadcrumbs from "../components/Breadcrumbs";
 import "../styles/StartPageStyle.css";
 import { useSelector, useDispatch } from 'react-redux';
 import * as StartPageActionCreators from "../store/actionCreators/StartPageActionCreators";
-import { fetchFullInfo, fetchMangaList } from "../store/middlewares/StartPageMiddlewares";
+import {fetchMangaList, fetchStartPageData} from "../store/middlewares/StartPageMiddlewares";
 
 
 function StartPage() {
 
     const text_field_value = useSelector(state => state.ui.StartPage.textFieldValue)
-
     const manga_pricing = useSelector(state => state.cached_data.StartPage.mangaPricing)
-
     const slider_value = useSelector(state => state.ui.StartPage.sliderValue)
-
     const loadingStatus = useSelector(state => state.ui.StartPage.loadingStatus)
-
     const mangaList = useSelector(state => state.cached_data.StartPage.mangaList)
-
     const dispatch = useDispatch()
 
     useEffect(() => {
 
-        // получение данных
-        dispatch(fetchFullInfo())
+        dispatch(fetchStartPageData())
 
     }, []);
 
     useEffect(() => {
 
-        // данные загружены => задаем начальные значения слайдеру и текст. полю
-        if (loadingStatus === false) {
+        if (!loadingStatus) {
             if (slider_value[1] === 0) {
                 dispatch(StartPageActionCreators.createAction_setSliderValue(manga_pricing))
             }
@@ -58,7 +51,7 @@ function StartPage() {
             <div className={`main-container ${loadingStatus && 'containerLoading'}`}>
                 {loadingStatus ? <div className={"hide-while-loading-page"}><Spinner animation={"border"}/></div>:
                     <>
-                        {manga_pricing[1] === 0 ? <></>:
+                        {manga_pricing[1] === 0 ? undefined:
                             <SearchAndFiltersGroup loading={loadingStatus} text_field_label={"Название манги"}
                                                    button_title={"Найти"} max={manga_pricing[1]} min={manga_pricing[0]}
                                                    slider_value={slider_value}

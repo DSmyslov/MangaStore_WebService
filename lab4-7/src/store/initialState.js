@@ -12,6 +12,7 @@ const initialState = {
         App: {
             userAuthorized: false,
             userCart: [],
+            userOrders: [],
         }
     },
     ui: {
@@ -21,6 +22,12 @@ const initialState = {
             sliderValue: [0, 0]
         },
         MangaPage: {
+            loadingStatus: true,
+        },
+        CartPage: {
+            loadingStatus: true,
+        },
+        OrdersPage: {
             loadingStatus: true,
         },
         App: {

@@ -1,7 +1,9 @@
 import {combineReducers} from "@reduxjs/toolkit";
 import { uiStartPageReducers, cached_dataStartPageReducers } from "./StartPageReducers";
 import { uiMangaPageReducers, cached_dataMangaPageReducers } from "./MangaPageReducers";
-import { uiAppReducers, cached_dataAppReducers } from "../reducers/AppReducers";
+import { uiAppReducers, cached_dataAppReducers } from "./AppReducers";
+import { uiCartPageReducers } from "./CartPageReducer";
+import { uiUserOrdersReducers } from "./UserOrdersReducer";
 
 
 const rootReducer = combineReducers({
@@ -13,6 +15,8 @@ const rootReducer = combineReducers({
     ui: combineReducers({
         StartPage: uiStartPageReducers,
         MangaPage: uiMangaPageReducers,
+        CartPage: uiCartPageReducers,
+        OrdersPage: uiUserOrdersReducers,
         App: uiAppReducers,
     }),
 })

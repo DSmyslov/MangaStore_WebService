@@ -1,5 +1,5 @@
 export const getMangaList = async () => {
-    return await fetch(`http://localhost:8000/manga/`)
+    return await fetch(`http://localhost:8000/manga/`, {credentials: "include"})
         .then(async (response) => {
             return await response.json();
         })
@@ -12,7 +12,7 @@ export const getMangaList = async () => {
 }
 
 export const getAuthorsOfManga = async (manga_id) => {
-    return await fetch(`http://localhost:8000/manga/${manga_id}/authors/`)
+    return await fetch(`http://localhost:8000/manga/${manga_id}/authors/`, {credentials: "include"})
         .then(async (response) => {
             return await response.json();
         })
@@ -25,7 +25,7 @@ export const getAuthorsOfManga = async (manga_id) => {
 }
 
 export const getGenresOfManga = async (manga_id) => {
-    return await fetch(`http://localhost:8000/manga/${manga_id}/genres/`)
+    return await fetch(`http://localhost:8000/manga/${manga_id}/genres/`, {credentials: "include"})
         .then(async (response) => {
             return await response.json();
         })
@@ -38,7 +38,7 @@ export const getGenresOfManga = async (manga_id) => {
 }
 
 export const getMangaListFiltered = async (name, max_cost, min_cost) => {
-    return await fetch(`http://localhost:8000/manga/?name=${name}&max_cost=${max_cost}&min_cost=${min_cost}`)
+    return await fetch(`http://localhost:8000/manga/?name=${name}&max_cost=${max_cost}&min_cost=${min_cost}`, {credentials: "include"})
         .then(async (response) => {
             return await (await response.json());
         })
@@ -51,7 +51,7 @@ export const getMangaListFiltered = async (name, max_cost, min_cost) => {
 }
 
 export const getMangaById = async (id=-1) => {
-    return await fetch(`http://localhost:8000/manga/${id}/`)
+    return await fetch(`http://localhost:8000/manga/${id}/`, {credentials: "include"})
         .then(async (response) => {
             return await response.json();
         })
@@ -64,7 +64,7 @@ export const getMangaById = async (id=-1) => {
 }
 
 export const getMangaPricing = async () => {
-    return await fetch('http://localhost:8000/mangaPricing/')
+    return await fetch('http://localhost:8000/mangaPricing/', {credentials: "include"})
         .then(async (response) => {
             return await response.json();
         })
@@ -74,4 +74,30 @@ export const getMangaPricing = async () => {
                 results: []
             }
         })
+}
+
+export const getCurrentCart = async () => {
+    return await fetch('http://localhost:8000/current_cart/', {
+        credentials: "include"
+    }).then(async response => {
+        return await response.json();
+    }).catch(() => {
+        return{
+            resultCount: 0,
+            results: []
+        }
+    })
+}
+
+export const getUserOrders = async () => {
+    return await fetch('http://localhost:8000/orders/', {
+        credentials: "include",
+    }).then(async response => {
+        return await response.json();
+    }).catch(() => {
+        return {
+            resultCount: 0,
+            results: []
+        }
+    })
 }

@@ -8,3 +8,8 @@ admin.site.register(models.Author)
 admin.site.register(models.MangaAuthor)
 admin.site.register(models.Title)
 admin.site.register(models.MangaMediaType)
+admin.site.register(models.Users)
+admin.site.register(models.Cart)
+admin.site.register(models.Order)
+admin.site.register(models.OrderStatus)
+

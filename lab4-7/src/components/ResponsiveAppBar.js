@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,21 +9,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import { useSelector, useDispatch } from "react-redux";
-import { createAction_addToAppBarLinks, createAction_deleteFromAppBarLinks, createAction_setUserStatus } from "../store/actionCreators/AppActionsCreators"
+import {useDispatch, useSelector} from "react-redux";
+import {
+    createAction_addToAppBarLinks, createAction_deleteFromAppBarLinks,
+    createAction_setUserStatus
+} from "../store/actionCreators/AppActionsCreators"
 import {useHistory} from "react-router";
 
 
 function ResponsiveAppBar() {
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
-
-    const pages = useSelector(state => state.ui.App.AppBarLinks)
-
+    const [anchorElNav, setAnchorElNav] = useState(null);
+    const default_pages = useSelector(state => state.ui.App.AppBarLinks)
     const userStatus = useSelector(state => state.cached_data.App.userAuthorized)
-
     const dispatch = useDispatch()
-
     const history = useHistory()
 
     const handleOpenNavMenu = (event) => {
@@ -34,25 +33,33 @@ function ResponsiveAppBar() {
         setAnchorElNav(null);
     };
 
-    const handleLoginLogoutBtnClick = (event) => {
+    const handleLoginLogoutBtnClick = event => {
         event.preventDefault()
-        if (!userStatus) {
-            dispatch(createAction_setUserStatus(!userStatus))
-            dispatch(createAction_addToAppBarLinks({
-                title: 'Корзина',
-                link: '/cart'
-            }))
-            dispatch(createAction_addToAppBarLinks({
-                title: 'Мои заказы',
-                link: '/purchases'
-            }))
+        if (userStatus) {
+            fetch('http://localhost:8000/logout/',
+                {
+                    credentials: "include"
+                })
+                .then(response => {
+                    dispatch(createAction_setUserStatus(false))
+                    history.push('/login')
+                })
         }
-        else {
-            dispatch(createAction_setUserStatus(!userStatus))
-            dispatch(createAction_deleteFromAppBarLinks())
-            dispatch(createAction_deleteFromAppBarLinks())
-        }
+        else history.push('/login')
     }
+
+    useEffect(() => {
+
+        if (userStatus) dispatch(createAction_addToAppBarLinks([
+            { title: 'Корзина', link: '/cart' },
+            { title: 'Заказы', link: '/purchases' },
+        ]))
+        else {
+            dispatch(createAction_deleteFromAppBarLinks('Корзина'))
+            dispatch(createAction_deleteFromAppBarLinks('Заказы'))
+        }
+
+    }, [userStatus])
 
     return (
         <AppBar position="static">
@@ -74,7 +81,6 @@ function ResponsiveAppBar() {
                     >
                         Manga WebStore
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                         <IconButton
                             size="large"
@@ -85,7 +91,6 @@ function ResponsiveAppBar() {
                         >
                             <MenuIcon />
                         </IconButton>
-
                         <Menu
                             id="menu-appbar"
                             anchorEl={anchorElNav}
@@ -104,7 +109,7 @@ function ResponsiveAppBar() {
                                 display: { xs: 'block', md: 'none' },
                             }}
                         >
-                            {pages.map((page, index) => (
+                            {default_pages.map((page, index) => (
                                 <MenuItem key={index} onClick={event => {
                                     event.preventDefault()
                                     history.push(page.link)
@@ -113,17 +118,8 @@ function ResponsiveAppBar() {
                                     <Typography textAlign="center">{page.title}</Typography>
                                 </MenuItem>
                             ))}
-                            <a href={"https://github.com/DSmyslov/MangaStore_WebService"}
-                               style={{textDecoration: "none"}}
-                               target={"_blank"}
-                            >
-                                <MenuItem key={pages.length}>
-                                    <Typography textAlign="center">GitHub</Typography>
-                                </MenuItem>
-                            </a>
                         </Menu>
                     </Box>
-
                     <Typography
                         variant="h5"
                         noWrap
@@ -141,9 +137,8 @@ function ResponsiveAppBar() {
                     >
                         Manga WebStore
                     </Typography>
-
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                        {pages.map((page, index) => (
+                        {default_pages.map((page, index) => (
                             <Button
                                 key={index}
                                 onClick={event => {
@@ -156,23 +151,10 @@ function ResponsiveAppBar() {
                                 {page.title}
                             </Button>
                         ))}
-                        <a href={"https://github.com/DSmyslov/MangaStore_WebService"}
-                           style={{textDecoration: "none"}}
-                           target={"_blank"}
-                        >
-                            <Button
-                                key={pages.length}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
-                            >
-                                GitHub
-                            </Button>
-                        </a>
                     </Box>
-
                     <Button color="inherit" onClick={handleLoginLogoutBtnClick}>
-                        {userStatus ? 'Logout': 'Login'}
+                        {userStatus ? 'Выйти': 'Войти'}
                     </Button>
-
                 </Toolbar>
             </Container>
         </AppBar>

@@ -54,6 +54,13 @@ class TitleSerializer(serializers.ModelSerializer):
         fields = ["id", "title_name_eng", "title_name_jp", "title_name_rus", "description"]
 
 
+class MangaSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Manga
+        fields = ["id", "manga_name", "title", "type", "release_date", "synopsis", "manga_image",
+                  "quantity_in_stock", "cost"]
+
+
 class MangaSerializer(serializers.ModelSerializer):
     title = TitleSerializer()
     type = MangaMediaTypeSerializer()
@@ -62,3 +69,50 @@ class MangaSerializer(serializers.ModelSerializer):
         model = Manga
         fields = ["id", "manga_name", "title", "type", "release_date", "synopsis", "manga_image",
                   "quantity_in_stock", "cost"]
+
+
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Users
+        fields = ["id", "login", "password", "username", "address", "email"]
+
+
+class OrderStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderStatus
+        fields = ["id", "order_status_name", "order_status_description"]
+
+
+# Остальные запросы к списку заказов
+class POSTOrderSerializer(serializers.ModelSerializer):
+    # order_statusid = OrderStatusSerializer()
+
+    class Meta:
+        model = Order
+        fields = ["id", "userid", "order_statusid", "order_price_sum", "order_date"]
+
+
+# for non-GET methods
+class CartSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cart
+        fields = ["id", "order_id", "manga_id"]
+
+
+
+class MangaInCartSerializer(serializers.ModelSerializer):
+    manga_id = MangaSerializer()
+
+    class Meta:
+        model = Cart
+        fields = ["manga_id", "id", "order_id"]
+
+
+# GET запросы к спику заказов
+class GETOrderSerializer(serializers.ModelSerializer):
+    order_statusid = OrderStatusSerializer()
+    ordered_manga = MangaInCartSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ["id", "userid", "order_statusid", "order_price_sum", "order_date", "ordered_manga"]

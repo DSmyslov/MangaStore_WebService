@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Col, Row, Spinner, Button} from "react-bootstrap";
 import {useParams} from "react-router";
 import MangaFullInfo from "../components/MangaFullInfo";
@@ -14,14 +14,76 @@ function MangaPage() {
     const { id_manga } = useParams();
 
     const loadingStatus = useSelector(state => state.ui.MangaPage.loadingStatus)
-
     const manga = useSelector(state => state.cached_data.MangaPage.mangaById)
-
     const authors = useSelector(state => state.cached_data.MangaPage.authorsOfManga)
-
     const genres = useSelector(state => state.cached_data.MangaPage.genresOfManga)
+    const user_cart = useSelector(state => state.cached_data.App.userCart)
+    const [btnLoaidng, setbtnLoading] = useState(false)
+    const userStatus = useSelector(state => state.cached_data.App.userAuthorized)
 
     const dispatch = useDispatch()
+
+    const clickHandler = async event => {
+        event.preventDefault()
+        setbtnLoading(true)
+        let order_id = undefined
+        if (user_cart.length === 0) {
+            // нужно сделать запрос GET /current_cart/
+            const get_cart_res = await (await fetch('http://localhost:8000/current_cart/', {
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": document.cookie
+                        .split('; ')
+                        .filter(row => row.startsWith('csrftoken='))
+                        .map(c => c.split('=')[1])[0]
+                }
+            })).json()
+            order_id = get_cart_res[0].id
+            const add_to_cart = await (await fetch('http://localhost:8000/cart/', {
+                method: 'POST',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": document.cookie
+                        .split('; ')
+                        .filter(row => row.startsWith('csrftoken='))
+                        .map(c => c.split('=')[1])[0]
+                },
+                body: JSON.stringify({
+                    order_id: order_id,
+                    manga_id: manga.id
+                })
+            })).json()
+            console.log(add_to_cart)
+            setbtnLoading(false)
+        }
+        else order_id = user_cart[0].order_id
+        // Проверим, есть ли данная манга в списке или нет
+        const shoold_add = user_cart.filter(item => item.manga_id.id === manga.id).length === 0
+        if (shoold_add) {
+            // осталось сделать POST /cart/ с параметрами order_id и manga_id
+            const add_to_cart = await (await fetch('http://localhost:8000/cart/', {
+                method: 'POST',
+                credentials: "include",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                    "X-CSRFToken": document.cookie
+                        .split('; ')
+                        .filter(row => row.startsWith('csrftoken='))
+                        .map(c => c.split('=')[1])[0]
+                },
+                body: JSON.stringify({
+                    order_id: order_id,
+                    manga_id: manga.id
+                })
+            })).json()
+            console.log(add_to_cart)
+            setbtnLoading(false)
+        }
+        console.log('Данная манга уже в вашей корзине!')
+        setbtnLoading(false)
+    }
 
     useEffect(() => {
 
@@ -81,9 +143,13 @@ function MangaPage() {
                                             <div className={"manga-cost"}>
                                                 Стоимость: {manga.cost} ₽
                                             </div>
-                                            <div className={"add-to-cart-btn"}>
-                                                <Button href={`http://localhost:3000/manga/${id_manga}`} target="" variant="primary">Добавить в корзину</Button>
-                                            </div>
+                                            {!userStatus? undefined:
+                                                <div className={"add-to-cart-btn"}>
+                                                    <Button onClick={clickHandler}
+                                                            disabled={btnLoaidng}
+                                                            variant="primary">Добавить в корзину</Button>
+                                                </div>
+                                            }
                                         </Col>
                                     </Row>
                                 </>

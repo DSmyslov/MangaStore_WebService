@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import PermissionsMixin
 
 
 class Author(models.Model):
@@ -80,3 +81,47 @@ class Title(models.Model):
         managed = False
         db_table = 'title'
 
+
+class Users(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    login = models.CharField(unique=True, max_length=64)
+    password = models.CharField(max_length=64)
+    username = models.CharField(unique=True, max_length=128)
+    address = models.CharField(max_length=256, blank=True, null=True)
+    email = models.CharField(max_length=256, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'user'
+
+
+class OrderStatus(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    order_status_name = models.CharField(unique=True, max_length=128)
+    order_status_description = models.CharField(max_length=512, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'order_status'
+
+
+class Order(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    userid = models.ForeignKey('Users', models.DO_NOTHING, db_column='userID')  # Field name made lowercase.
+    order_statusid = models.ForeignKey('OrderStatus', models.DO_NOTHING, db_column='order_statusID', default=6)  # Field name made lowercase.
+    order_price_sum = models.DecimalField(max_digits=7, decimal_places=2, default="0.00")
+    order_date = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        managed = False
+        db_table = 'order'
+
+
+class Cart(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    order_id = models.ForeignKey(Order, models.DO_NOTHING, db_column='orderID', related_name="ordered_manga")  # Field name made lowercase.
+    manga_id = models.ForeignKey('Manga', models.DO_NOTHING, db_column='mangaID')  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'cart'
