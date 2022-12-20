@@ -27,7 +27,13 @@ SECRET_KEY = 'django-insecure-cjh944dd7h^ee@4*q_*o8!$$*&hlw3+h@9+$nfpi02vr8n1wh7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost',
+                 '127.0.0.1',
+                 '192.168.95.154',
+                 '192.168.95.154',
+                 '192.168.0.100',
+                 '192.168.0.101'
+                 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
 
@@ -57,6 +63,9 @@ CORS_ALLOW_HEADERS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:8000',
+    'http://192.168.95.184:3000',
+    'http://192.168.95.154:3000',
+    'http://192.168.0.100:3000'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -76,7 +85,13 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+CSRF_COOKIE_SECURE = False
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:3000',
+                        'http://192.168.95.154:3000',
+                        'http://192.168.95.184:3000',
+                        'http://192.168.0.100:3000'
+                        ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [

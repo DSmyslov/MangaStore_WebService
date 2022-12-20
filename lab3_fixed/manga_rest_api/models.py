@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import PermissionsMixin
+from django.utils.timezone import now
 
 
 class Author(models.Model):
@@ -110,7 +111,7 @@ class Order(models.Model):
     userid = models.ForeignKey('Users', models.DO_NOTHING, db_column='userID')  # Field name made lowercase.
     order_statusid = models.ForeignKey('OrderStatus', models.DO_NOTHING, db_column='order_statusID', default=6)  # Field name made lowercase.
     order_price_sum = models.DecimalField(max_digits=7, decimal_places=2, default="0.00")
-    order_date = models.DateTimeField(auto_now=True)
+    order_date = models.DateTimeField(default=now)
 
     class Meta:
         managed = False

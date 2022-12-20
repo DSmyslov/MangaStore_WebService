@@ -1,5 +1,7 @@
 import this
+from datetime import datetime
 
+from django.utils.dateparse import parse_datetime
 from django.http import HttpResponse
 from rest_framework import viewsets
 from django.db.models import Max, Min, Avg
@@ -10,6 +12,12 @@ from rest_framework.response import Response
 from .serializers import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import Group
+
+
+# проверка на менеджера
+def is_manager(user):
+    return user.groups.filter(name='Managers').exists()
 
 
 # информации о стоимости манги
@@ -26,6 +34,7 @@ def logout_user(request):
     response = Response({"result": "U_ARE_NO_LONGER_AUTHORIZED"})
     response.set_cookie("is_logged_in",
                         value=False)
+    response.set_cookie("is_manager", value=False)
     return response
 
 
@@ -41,6 +50,10 @@ def login_user(request):
         response.set_cookie("is_logged_in",
                             value=True,
                             expires=request.session.get_expiry_date())
+        if is_manager(user):
+            response.set_cookie("is_manager",
+                                value=True,
+                                expires=request.session.get_expiry_date())
         return response
     else:
         return Response({'error': 'U_ARE_NOT_AUTHORIZED'})
@@ -102,8 +115,27 @@ class OrderViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         if self.request.user.is_authenticated:
+            params = self.request.query_params.dict()
+            queryset = Order.objects.all().order_by('-order_date')
+            try:
+                queryset = queryset.filter(order_date__gte=params['start_date'])
+            except:
+                pass
+            try:
+                queryset = queryset.filter(order_date__lte=params['end_date'])
+            except:
+                pass
+            try:
+                queryset = queryset.filter(order_statusid__in=params['statuses'].split(','))
+            except:
+                pass
+            try:
+                if params['all'] == 'true' and is_manager(User.objects.get(username=self.request.user)):
+                    return queryset
+            except:
+                pass
             user_id = Users.objects.get(login=self.request.user).id
-            return Order.objects.filter(userid=user_id)
+            return Order.objects.filter(userid=user_id).order_by('-order_date')
         else:
             return Order.objects.all()
 

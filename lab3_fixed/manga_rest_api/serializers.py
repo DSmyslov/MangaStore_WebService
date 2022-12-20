@@ -112,6 +112,7 @@ class MangaInCartSerializer(serializers.ModelSerializer):
 class GETOrderSerializer(serializers.ModelSerializer):
     order_statusid = OrderStatusSerializer()
     ordered_manga = MangaInCartSerializer(many=True, read_only=True)
+    userid = UsersSerializer()
 
     class Meta:
         model = Order
