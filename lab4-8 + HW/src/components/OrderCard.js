@@ -9,9 +9,32 @@ import api_socket from "../network";
 const OrderCard = ({ is_manager, order, manager_page, statuses }) => {
 
     const [show, setShow] = useState(false);
-    const [newOrderStatus, setNewOrderStatus] = useState(6)
+    const [newOrderStatus, setNewOrderStatus] = useState(order.order_statusid.id)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+    const getOptions = (cur_status) => {
+        switch (cur_status) {
+            case 14:
+                return [
+                    {
+                        value: 9,
+                        label: 'Заказ доставляется'
+                    },
+                    {
+                        value: 13,
+                        label: 'Заказ отклонен'
+                    }
+                ]
+            case 9:
+                return [
+                    {
+                        value: 14,
+                        label: 'Заказ оплачен'
+                    }
+                ]
+        }
+    }
 
     return (
         <>
@@ -21,6 +44,8 @@ const OrderCard = ({ is_manager, order, manager_page, statuses }) => {
                     <Card.Text>
                         {is_manager ? <>Пользователь: {order.userid.username}<br/></>: undefined}
                         Дата заказа: {new Date(order.order_date).toLocaleString()}<br/>
+                        Дата оплаты: {order.payment_date?new Date(order.payment_date).toLocaleString():'Еще не оплачено'}<br/>
+                        Дата доставки: {order.delivery_date?new Date(order.delivery_date).toLocaleString():'Еще не доставлено'}<br/>
                         Стоимость: {order.order_price_sum} ₽<br/>
                         Текущий статус: {order.order_statusid.order_status_name}
                     </Card.Text>
@@ -62,14 +87,9 @@ const OrderCard = ({ is_manager, order, manager_page, statuses }) => {
                                     value: item.id,
                                     label: item.order_status_name
                                 }
-                            })[0]}
+                            }).filter(item => item.value === order.order_statusid.id)[0]}
                             name="color"
-                            options={statuses.map(item => {
-                                return {
-                                    value: item.id,
-                                    label: item.order_status_name
-                                }
-                            })}
+                            options={getOptions(newOrderStatus)}
                             onChange={choice => {
                                 setNewOrderStatus(choice.value)}
                             }
@@ -93,7 +113,7 @@ const OrderCard = ({ is_manager, order, manager_page, statuses }) => {
                                 },
                                 body: JSON.stringify({
                                     order_statusid: newOrderStatus,
-                                    order_date: new Date(order.order_date).toISOString()
+                                    delivery_date: newOrderStatus === 9? new Date('2022-12-31').toISOString() : null
                                 })
                             };
                             fetch(`http://${api_socket}/orders/${order.id}/?all=true`, options)

@@ -12,6 +12,7 @@ import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import Select from "react-select";
 import CreatableSelect from 'react-select/creatable';
+import {createAction_setMangaList} from "../store/actionCreators/StartPageActionCreators";
 
 const MangaCard = ({manga, is_manager}) => {
 
@@ -232,6 +233,34 @@ const MangaCard = ({manga, is_manager}) => {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                    <Button
+                        onClick={event => {
+                            // запрос на изменение одного поля в манге
+                            const options = {
+                                credentials: 'include',
+                                method: 'PATCH',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    "X-CSRFToken": document.cookie
+                                        .split('; ')
+                                        .filter(row => row.startsWith('csrftoken='))
+                                        .map(c => c.split('=')[1])[0]
+                                },
+                                body: JSON.stringify({
+                                    shown: 0
+                                })
+                            };
+                            fetch(`http://${api_socket}/manga/${manga.id}/`, options)
+                                .then(response => response.json())
+                                .then(response => {
+                                    console.log(response)
+                                    dispatch(createAction_setMangaList(manga_list.filter(item => item.id !== manga.id)))
+                                })
+                                .catch(err => console.error(err));
+                        }
+                    }>
+                        Удалить
+                    </Button>
                 </>
             }
         </Card.Body>

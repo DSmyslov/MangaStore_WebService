@@ -59,7 +59,7 @@ function UserCartPage() {
                                                 },
                                                 body: JSON.stringify({
                                                     order_statusid: 8,
-                                                    order_date: new Date().toISOString()
+                                                    payment_date: new Date().toISOString()
                                                 })
                                             };
                                             fetch(`http://${api_socket}/orders/${user_cart[user_cart.length - 1].order_id}/`, options)

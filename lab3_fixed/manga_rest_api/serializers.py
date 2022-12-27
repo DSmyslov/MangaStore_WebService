@@ -58,7 +58,7 @@ class MangaSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manga
         fields = ["id", "manga_name", "title", "type", "release_date", "synopsis", "manga_image",
-                  "quantity_in_stock", "cost"]
+                  "quantity_in_stock", "cost", "shown"]
 
 
 class MangaSerializer(serializers.ModelSerializer):
@@ -68,7 +68,7 @@ class MangaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Manga
         fields = ["id", "manga_name", "title", "type", "release_date", "synopsis", "manga_image",
-                  "quantity_in_stock", "cost"]
+                  "quantity_in_stock", "cost", "shown"]
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -89,7 +89,7 @@ class POSTOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["id", "userid", "order_statusid", "order_price_sum", "order_date"]
+        fields = ["id", "userid", "order_statusid", "order_price_sum", "order_date", "payment_date", "delivery_date"]
 
 
 # for non-GET methods
@@ -116,4 +116,4 @@ class GETOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Order
-        fields = ["id", "userid", "order_statusid", "order_price_sum", "order_date", "ordered_manga"]
+        fields = ["id", "userid", "order_statusid", "order_price_sum", "order_date", "payment_date", "delivery_date", "ordered_manga"]

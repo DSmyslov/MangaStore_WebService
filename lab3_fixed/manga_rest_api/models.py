@@ -45,6 +45,7 @@ class Manga(models.Model):
     manga_image = models.CharField(max_length=512, default="images/mangas/manga_image.jpg")
     quantity_in_stock = models.IntegerField(default="0")
     cost = models.DecimalField(max_digits=7, decimal_places=2, default="0.00")
+    shown = models.IntegerField(default=1)
 
     class Meta:
         managed = False
@@ -112,6 +113,8 @@ class Order(models.Model):
     order_statusid = models.ForeignKey('OrderStatus', models.DO_NOTHING, db_column='order_statusID', default=6)  # Field name made lowercase.
     order_price_sum = models.DecimalField(max_digits=7, decimal_places=2, default="0.00")
     order_date = models.DateTimeField(default=now)
+    payment_date = models.DateTimeField(blank=True, null=True)
+    delivery_date = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         managed = False

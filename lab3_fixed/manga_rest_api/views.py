@@ -7,12 +7,26 @@ from rest_framework import viewsets
 from django.db.models import Max, Min, Avg
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny, BasePermission, \
+    SAFE_METHODS
 from rest_framework.response import Response
 from .serializers import *
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import Group
+
+
+# Наш собственный пермишн для менеджера
+class IsManagerOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            # У всех есть доступ к безопасным методам GET, OPTIONS, ...
+            return True
+        print(request.user)
+        print(User.objects.filter(pk=request.user.id, groups__name='Manager').exists())
+        # К небезопасным методам есть доступ только у менеджера
+        # Это методы POST, PUT, DELETE, PATCH, ...
+        return bool(request.user and User.objects.filter(username=request.user, groups__name='Managers').exists())
 
 
 # проверка на менеджера
@@ -24,7 +38,7 @@ def is_manager(user):
 @api_view(['GET'])
 @permission_classes([IsAuthenticatedOrReadOnly])
 def get_manga_pricing(request):
-    return Response(Manga.objects.aggregate(max_price=Max('cost'), min_price=Min('cost'), average_cost=Avg('cost')))
+    return Response(Manga.objects.filter(shown=1).aggregate(max_price=Max('cost'), min_price=Min('cost'), average_cost=Avg('cost')))
 
 
 # выход пользователя
@@ -40,6 +54,7 @@ def logout_user(request):
 
 # авторизация
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def login_user(request):
     username = request.data['login']
     password = request.data['password']
@@ -61,6 +76,7 @@ def login_user(request):
 
 # регистрация нового пользователя
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def reg_new_user(request):
     try:
         User.objects.create_user(username=request.data['login'],
@@ -87,6 +103,7 @@ class MangaViewSet(viewsets.ModelViewSet):
         queryset = Manga.objects.all()
         if self.request.method == 'GET':
             params = self.request.query_params.dict()
+            queryset = queryset.filter(shown=1)
             try:
                 queryset = queryset.filter(manga_name__icontains=params['name'])
             except:
@@ -226,7 +243,7 @@ class MangaAuthorViewSet(viewsets.ModelViewSet):
 
 
 class MangaMediaTypeViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly, IsManagerOrReadOnly]
     queryset = MangaMediaType.objects.all()
     serializer_class = MangaMediaTypeSerializer
 
@@ -242,7 +259,7 @@ class MangaFullInfoViewSet(viewsets.ModelViewSet):
     serializer_class = MangaSerializer
 
     def get_queryset(self):
-        queryset = Manga.objects.select_related('')
+        queryset = Manga.objects.filter(shown=1).select_related('')
         return queryset
 
 
